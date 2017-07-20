@@ -36,9 +36,9 @@ functions as they are.
 
 The logic for drawing single lane lines on each side is to take the Hough line segments and divide them into collections of left and right lane line points. This was done as follows
 
-1. For each Hough line segment, compute its slope
-2. Otherwise, use the slope to determine if it is a left lane line (slope < 0) or right lane line.
-3. For each side, add the endpoints of the line segment into a collection each of x and y coordinates.  At the end, there are four collections - left x, left y, right x, and right y.
+1. For each Hough line segment, compute its slope.
+2. Use the slope to determine if it is a left lane line (slope < 0) or right lane line.
+3. For each side, add the endpoints of the line segment into collections of x and y coordinates.  At the end, there are four collections - left x, left y, right x, and right y.
 4. From the left x/y coordinates compute the left lane line, and from the right x/y coordinates,
 compute the right lane line.
 
@@ -50,14 +50,14 @@ fit to compute the corresponding x coordinates.  This is done in the 'average\_l
 Finally, for the challenge video, the above logic is modified in 3 ways.
 
 1. First, a moving average from past video frames is used to smooth out the line from frame to frame.
-2. Second, for the Hough line segments, if the line slope is too small or too large, ignore the line
+2. Second, for the Hough line segments, if the line slope is too small or too large, the line is ignored.
 2. Third, as new frames are processed, if the new average line has a slope that changes
 too much from the current average, the average line is discarded and the moving average is used
 instead.
 
 For the moving average, a fixed window queue of the computed average line of each frame is used.
 A queue is used instead of a simple numerical moving average to help smooth the average as the first set of frames are processed. In practice, a moving average or at least remembering the last
-good lane line is important as some frames in the challenge video require throwing out all the lines due to extreme slopes or high slope changes. So for some frames, we just keep the last known lane line.
+good lane line is important as some frames in the challenge video require throwing out all the lines due to extreme slopes or high slope changes.
 
 The implementation handles edges cases where no lane lines are computed.
 
@@ -85,6 +85,8 @@ navigating in the field of view.
 
 A possible improvement could be to dynamically adjust the region of interest
 based on the curvature of the road.
+
+It may be worth experimenting with different methods of combining past and current frame such as exponential decay in the queue or a band pass filter.
 
 A good improvement would be to handle changing of lanes, including using lane finding
 to determine when to stop changing lanes.
